@@ -1,3 +1,4 @@
+
 const width = window.innerWidth;
 const height = window.innerHeight;
 
@@ -10,11 +11,29 @@ const centerX = height / 2;
 const scale = 0.9;
 const isMobile = detectMob();
 
-
-
 let previousTime = Date.now();
 
+import { Enemy } from './enemy.js';
+
+const setNiceSize = () => {
+console.log(isMobile);
+  if (!isMobile) {
+    console.log(smallest * scale);
+    canvas.width = smallest * scale;
+    canvas.height = smallest * scale;
+  } else {
+    canvas.width = width;
+    canvas.height = height;
+  }
+};
+
+setNiceSize();
+
 // document.getElementById("button").addEventListener("click", alertMe);
+
+canvas.addEventListener("mousedown", e => {
+  console.log(e);
+});
 
 function detectMob() {
     const toMatch = [
@@ -32,46 +51,43 @@ function detectMob() {
     });
 }
 
-const setNiceSize = () => {
-console.log(isMobile);
-  if (!isMobile) {
-    console.log(smallest * scale);
-    canvas.width = smallest * scale;
-    canvas.height = smallest * scale;
-  } else {
-    canvas.width = width;
-    canvas.height = height;
-  }
-};
-setNiceSize();
 
-function component(width, height, color, x, y, type) {
-    this.type = type;
-    this.width = width;
-    this.height = height; 
-    this.x = x;
-    this.y = y;
-}
+
+
+
 
 
 const startGame = () => {
-    time = Date.now();
+  //time = Date.now();
 
-    draw();
+  draw();
 
-    updateGame(time);
-
+  updateGame();
 }
+
 
 
 const updateGame = () => {
   //Game logic
-  
-  console.log("hello")
 
-  draw();
+  //draw();
   
-  timerRef = setTimeout(updateGame, 1000);
+  //timerRef = setTimeout(updateGame, 1000);
+
+  var enemy1 = new Enemy(ctx, canvas.width, canvas.height);
+
+
+
+
+  window.setInterval(() => {
+    enemy1.remove();
+    enemy1.pickLocation();
+
+    enemy1.update();
+    
+
+  }, 500);
+
 }
 
 
@@ -82,16 +98,27 @@ const draw = () => {
     ctx.fillStyle = "#99FF99";
     ctx.fillRect(0,0,200,200); 
 
-    ctx.fillStyle = "red";
-    ctx.fillRect(x/2, y/2, 50, 50);
-    
-    
-    
+    ctx.fillStyle = "blue";
+    ctx.rotate(getAngle(canvas.width/2,canvas.height/2,100,100))
+    ctx.fillRect(x/2, y/2, 50, 50);   
+    ctx.rotate(0)
 }
 
 
 //document.addEventListener("load", startGame)
 startGame();
+
+function getAngle (xBase, yBase, xTarget, yTarget){
+  const x = xTarget-xBase;
+  const y = yTarget-yBase;
+  console.log(x,y);
+  const angle = Math.atan2(x/y);
+  // return angle / Math.PI;
+  return Math.atan2(x, y) / Math.PI;
+}
+
+// console.log('this is an angle: ' + getAngle(canvas.width/2, canvas.height/2, 200, 100));
+
 
 
 
