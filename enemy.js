@@ -1,14 +1,12 @@
 export function Enemy(ctx, width, height) {
 
-    console.log("Im constructred")
-
     this.x;
     this.y;
     this.radius = 50;
     // delta x and y, the x and y pixels that the enemy should move
     this.dx = 1;
     this.dy = 1;
-    this.velocity = 5;
+    this.velocity = 2;
 
 
 
@@ -32,9 +30,9 @@ export function Enemy(ctx, width, height) {
                 this.y = height;
                 break;
         }
-        this.x = Math.floor(this.x) - this.radius / 2;
-        this.y = Math.floor(this.y) - this.radius / 2;
-        console.log("Spawned enemy at", this.x, this.y);
+        //this.x = Math.floor(this.x) - this.radius / 2;
+        //this.y = Math.floor(this.y) - this.radius / 2;
+        //console.log("Spawned enemy at", this.x, this.y);
     }
 
     this.getAngle = (xBase, yBase, xTarget, yTarget) => {
@@ -55,7 +53,7 @@ export function Enemy(ctx, width, height) {
     this.draw = () => 
     {
         ctx.fillStyle = "red";
-        ctx.fillRect(this.x, this.y, 50, 50);
+        ctx.fillRect(this.x - this.radius/2, this.y - this.radius/2, this.radius, this.radius);
     }
     
     this.move = () =>
@@ -89,7 +87,7 @@ export function Enemy(ctx, width, height) {
     this.draw();
 
 
-    console.log(this.getLocation());
+    //console.log(this.getLocation());
 
 }
 

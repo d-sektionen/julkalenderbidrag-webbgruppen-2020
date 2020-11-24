@@ -11,7 +11,6 @@ export function Player(ctx, width, height) {
     switch (mode) {
       case 0:
         return "https://i.pinimg.com/originals/2f/9c/c5/2f9cc57d50624cf26ba75fd2a7e8411f.png";
-        break;
       case 1:
         return "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/27dbbda7-320b-488b-b8cb-6d993296f095/dd5osvy-d1e63418-1767-4353-8d84-08336f103f1d.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOiIsImlzcyI6InVybjphcHA6Iiwib2JqIjpbW3sicGF0aCI6IlwvZlwvMjdkYmJkYTctMzIwYi00ODhiLWI4Y2ItNmQ5OTMyOTZmMDk1XC9kZDVvc3Z5LWQxZTYzNDE4LTE3NjctNDM1My04ZDg0LTA4MzM2ZjEwM2YxZC5wbmcifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6ZmlsZS5kb3dubG9hZCJdfQ.zxo9fxbeank_SU_HvxXAz8lbfUfdweyBTMexi1WaXwo";
     }
@@ -23,19 +22,24 @@ export function Player(ctx, width, height) {
     const angle = Math.atan2(x / y);
     return Math.atan2(x, y);
   };
+
+  this.getPlayer = () => {
+    let angle = this.getAngle(
+      width / 2,
+      height / 2,
+      this.mouse.x,
+      this.mouse.y
+    );
+    return angle;
+  }
+
   this.draw = () => {
     ctx.save();
     ctx.fillStyle = "blue";
     ctx.translate(width / 2, height / 2);
     const img = new Image();
     img.src = this.getImage(1);
-    var angle = this.getAngle(
-      width / 2,
-      height / 2,
-      this.mouse.x,
-      this.mouse.y
-    );
-    ctx.rotate(-angle + Math.PI);
+    ctx.rotate(-this.getPlayer() + Math.PI);
     ctx.drawImage(
       img,
       -this.radius / 2,
@@ -52,6 +56,8 @@ export function Player(ctx, width, height) {
       y: mousePos.y,
     };
   };
+
+  
 
   this.update = () => {};
 }
