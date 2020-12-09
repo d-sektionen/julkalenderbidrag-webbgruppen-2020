@@ -2,7 +2,13 @@ export function Bullet(ctx, width, height, angle) {
   this.x = width / 2;
   this.y = height / 2;
   this.radius = 10;
-  this.color = "#FF0000"
+  this.color = "#20407C"//"#FF0000"
+  /*
+  D: #754022
+  IT: #E5398D
+  U: #20407C
+  IP: #70BD44
+  */
 
   
   this.velocity = 10;
@@ -30,10 +36,10 @@ export function Bullet(ctx, width, height, angle) {
   }
 
   this.checkCollision = (enemy) => {
-    return  this.x - this.radius/2 <= enemy.x + enemy.radius/2 &&
-            this.x + this.radius/2 > enemy.x - enemy.radius/2 && 
-            this.y - this.radius/2 <= enemy.y + enemy.radius/2 &&
-            this.y + this.radius/2 > enemy.y - enemy.radius/2;
+    return  this.x - this.radius/2 <= enemy.x + enemy.width/2 &&
+            this.x + this.radius/2 > enemy.x - enemy.width/2 && 
+            this.y - this.radius/2 <= enemy.y + enemy.height/2 &&
+            this.y + this.radius/2 > enemy.y - enemy.height/2;
   }
 
   this.move = () => {

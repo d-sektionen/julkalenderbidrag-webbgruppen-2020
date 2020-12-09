@@ -1,12 +1,22 @@
 export function Enemy(ctx, width, height) {
 
+    let courses = ["TATA41", "TATA65", "TDDE25", "TSEA22", "TSEA82"]
+    let index = Math.floor(Math.random() * 5);
+
     this.x;
     this.y;
     this.radius = 50;
+    this.width = 50;
+    this.height = 75;
     // delta x and y, the x and y pixels that the enemy should move
     this.dx = 1;
     this.dy = 1;
     this.velocity = 2;
+    this.img = new Image();
+    this.src = "imgs/" + courses[index] + ".PNG";
+    this.img.src = this.src
+
+    
 
 
 
@@ -52,8 +62,15 @@ export function Enemy(ctx, width, height) {
     
     this.draw = () => 
     {
-        ctx.fillStyle = "red";
-        ctx.fillRect(this.x - this.radius/2, this.y - this.radius/2, this.radius, this.radius);
+        ctx.drawImage(
+          this.img,
+          this.x - this.radius / 2,
+          this.y - this.radius / 2,
+          this.width,
+          this.height
+        );
+        // ctx.fillStyle = "red";
+        // ctx.fillRect(this.x - this.radius/2, this.y - this.radius/2, this.radius, this.radius);
     }
     
     this.move = () =>

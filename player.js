@@ -1,4 +1,15 @@
-export function Player(ctx, width, height) {
+export function Player(ctx, width, height, program) {
+  /*
+  pacman - IP
+  gustav - D
+  kirby - U
+  barbapappa - IT 
+  */
+  var kattenGustaf = "imgs/kattenGustaf.png";
+  var blueKirby = "imgs/blueKirby.png";
+  var barbapappa = "imgs/barbapappa.png";
+  var pacman = "imgs/pacman_shooter.png";
+
   this.width = width;
   this.height = height;
   this.mouse = {
@@ -6,13 +17,18 @@ export function Player(ctx, width, height) {
     y: 0,
   };
   this.radius = 75;
+  this.program = program;
 
-  this.getImage = (mode) => {
-    switch (mode) {
-      case 0:
-        return "https://i.pinimg.com/originals/2f/9c/c5/2f9cc57d50624cf26ba75fd2a7e8411f.png";
-      case 1:
-        return "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/27dbbda7-320b-488b-b8cb-6d993296f095/dd5osvy-d1e63418-1767-4353-8d84-08336f103f1d.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOiIsImlzcyI6InVybjphcHA6Iiwib2JqIjpbW3sicGF0aCI6IlwvZlwvMjdkYmJkYTctMzIwYi00ODhiLWI4Y2ItNmQ5OTMyOTZmMDk1XC9kZDVvc3Z5LWQxZTYzNDE4LTE3NjctNDM1My04ZDg0LTA4MzM2ZjEwM2YxZC5wbmcifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6ZmlsZS5kb3dubG9hZCJdfQ.zxo9fxbeank_SU_HvxXAz8lbfUfdweyBTMexi1WaXwo";
+  this.getImage = (program) => {
+    switch (program) {
+      case "D":
+        return kattenGustaf;
+      case "U":
+        return blueKirby;
+      case "IT":
+        return barbapappa;
+      case "IP":
+        return pacman;
     }
   };
 
@@ -38,7 +54,7 @@ export function Player(ctx, width, height) {
     ctx.fillStyle = "blue";
     ctx.translate(width / 2, height / 2);
     const img = new Image();
-    img.src = this.getImage(1);
+    img.src = this.getImage(this.program);
     ctx.rotate(-this.getPlayer() + Math.PI);
     ctx.drawImage(
       img,
