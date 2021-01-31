@@ -1,17 +1,83 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>idk</title>
-    <link rel="stylesheet" type="text/css" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ASTEROIDS: D GAME</title>
+
+  <style type="text/css">
+    body{
+      background-color: black;
+      color: white;
+      font-family: Arial, Verdana, Tahoma, sans-serif;
+
+    }
+
+    #wrapper{
+      /*background-color: #071a27;*/
+      background-color:rgba(0, 0, 0, 0.5);
+      padding: 10px;
+      max-width: 800px;
+      margin: auto;
+    }
+
+    .player-element{
+      border: 1px solid black;
+      background-color: #212a30;
+      margin: 20px;
+      padding: 10px;
+    }
+
+    .title{
+      color: #57e069;
+    }
+
+    #play{
+      background-color: green;
+      color: white;
+      padding: 30px;
+      font-size: 30px;
+      border: 1px solid white;
+      border-radius: 5px;
+      width: 100%;
+    }
+    #play2{
+      background-color: #182b17;
+      color: white;
+      padding: 10px;
+      font-size: 20px;
+      border: 1px solid white;
+      border-radius: 5px;
+      width: 100%;
+      margin-top: 5px;
+    }
+
+    #header{
+      font-size: 50px;
+      font-family: 'Courier New', Courier, monospace;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+  </style>
+
 </head>
-<body>
+<body style="background: url('https://images.pexels.com/photos/998641/pexels-photo-998641.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260'); background-size:100%;">
 
+  
+  <div id="wrapper">
 
-<canvas height="3000" width="3000" id="myCanvas" >
-    Your browser does not support the HTML canvas tag.
-</canvas>
+    <h1 id="header">ASTEROIDS: D GAME</h1>
 
-<script src="script.js" type="module"></script>
+    <p style="text-align:center">av Webbgruppen 20/21</p>
+
+    <a href="game.html">
+      <button id="play">
+        Börja spela
+      </button>
+    </a>
+
+  </div>
 
 </body>
+
 </html>

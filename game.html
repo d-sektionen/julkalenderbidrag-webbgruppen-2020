@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ASTEROIDS: D GAME</title>
+    <meta name="viewport" content= "width=device-width, user-scalable=no">
+    <style>
+      body {
+          margin: 0;
+          background-color: black;
+          overflow: hidden;
+      }
+
+      * {
+          margin: 0;
+          padding: 0;
+          max-width: 100%;
+          max-height: 100%;
+      }
+
+      #myCanvas {
+          border: 1px solid black;
+          margin: auto;
+          display: block;
+          background-color: black;
+      }
+
+
+      #player
+      {
+          background-color: red;
+          width: 20px;
+          height: 20px;
+      }
+
+
+      #game-over-box
+      {
+          width: 500px;
+          height: 200px;
+          background-color: red;
+      }
+    </style>
+</head>
+<body>
+
+
+<canvas height="3000" width="3000" id="myCanvas" style="background: url('https://images.pexels.com/photos/998641/pexels-photo-998641.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260'); background-size:100%;">
+    Your browser does not support the HTML canvas tag.
+</canvas>
+
+<!-- <script src="script.js" type="module"></script> -->
+
+<script>
+    //alert(window.localStorage.getItem('token'));
+
+    let starttime = new Date().getTime();
+
+
+// 
+//
+// ███████╗███╗   ██╗███████╗███╗   ███╗██╗   ██╗
+// ██╔════╝████╗  ██║██╔════╝████╗ ████║╚██╗ ██╔╝
+// █████╗  ██╔██╗ ██║█████╗  ██╔████╔██║ ╚████╔╝ 
+// ██╔══╝  ██║╚██╗██║██╔══╝  ██║╚██╔╝██║  ╚██╔╝  
+// ███████╗██║ ╚████║███████╗██║ ╚═╝ ██║   ██║   
+// ╚══════╝╚═╝  ╚═══╝╚══════╝╚═╝     ╚═╝   ╚═╝   
+// 
+// 
+
+function Enemy(ctx, width, height) {
+
+let books = [
+  "https://i.imgur.com/zpj7c0U.png",
+  "https://i.imgur.com/yhTDBBA.png",
+  "https://i.imgur.com/NgIs9DX.png",
+  "https://i.imgur.com/McKdpwy.png",
+  "https://i.imgur.com/Mmw8XHB.png",
+
+  "https://i.imgur.com/qFq8NBX.png",
+  "https://i.imgur.com/nwoEA6B.png",
+  "https://i.imgur.com/QeY18rc.png",
+  "https://i.imgur.com/syNYQ8G.png",
+  "https://i.imgur.com/6UAsl22.png",
+  "https://i.imgur.com/kmxH5Pz.png",
+  "https://i.imgur.com/5kKhdZt.png",
+  "https://i.imgur.com/Z7SPN6N.png"
+  ]
+let index = Math.floor(Math.random() * 13); // ------------------------------------- not dynamic 
+
+this.x;
+this.y;
+this.radius = 50;
+this.width = 50;
+this.height = 75;
+// delta x and y, the x and y pixels that the enemy should move
+this.dx = 1;
+this.dy = 1;
+this.velocity = 2;
+this.img = new Image();
+this.src = books[index];
+this.img.src = this.src
+
+this.pickLocation = () => {
+    var rnd = Math.floor(Math.random() * 4);
+    switch (rnd) {
+        case 0:
+            this.x = 0;
+            this.y = Math.random() * height;
+            break;
+        case 1:
+            this.x = width;
+            this.y = Math.random() * height;
+            break;
+        case 2:
+            this.x = Math.random() * width;
+            this.y = 0;
+            break;
+        case 3:
+            this.x = Math.random() * width;
+            this.y = height;
+            break;
+    }
+    //this.x = Math.floor(this.x) - this.radius / 2;
+    //this.y = Math.floor(this.y) - this.radius / 2;
+    //console.log("Spawned enemy at", this.x, this.y);
+}
+
+this.getAngle = (xBase, yBase, xTarget, yTarget) => {
+    const x = xTarget - xBase;
+    const y = yTarget - yBase;
+    const angle = Math.atan2(x / y);
+    return Math.atan2(x, y);
+}
+
+this.pickDirection = () => {
+    var angle = this.getAngle(this.x, this.y, width/2, height/2);
+
+    this.dx = Math.sin(angle);
+    this.dy = Math.cos(angle);
+}
+
+
+this.draw = () => 
+{
+    ctx.drawImage(
+      this.img,
+      this.x - this.radius / 2,
+      this.y - this.radius / 2,
+      this.width,
+      this.height
+    );
+}
+
+this.move = () =>
+{
+    this.x += this.dx * this.velocity;
+    this.y += this.dy * this.velocity;
+}
+
+
+this.getLocation = () => 
+{
+    return {
+        "x": this.x, 
+        "y": this.y
+    }
+}
+
+
+this.inBounds = () => {
+    return !(
+      this.x < -this.radius / 2 ||
+      this.x > width ||
+      this.y < -this.radius / 2 ||
+      this.y > height
+    );
+}
+
+
+this.pickLocation();
+this.pickDirection();
+this.draw();
+}
+
+
+//
+//
+//    ██████╗ ██╗      █████╗ ██╗   ██╗███████╗██████╗
+//    ██╔══██╗██║     ██╔══██╗╚██╗ ██╔╝██╔════╝██╔══██╗
+//    ██████╔╝██║     ███████║ ╚████╔╝ █████╗  ██████╔╝
+//    ██╔═══╝ ██║     ██╔══██║  ╚██╔╝  ██╔══╝  ██╔══██╗
+//    ██║     ███████╗██║  ██║   ██║   ███████╗██║  ██║
+//    ╚═╝     ╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═╝  ╚═╝
+//
+//
+
+
+
+function Player(ctx, width, height, program) {
+  /*
+  pacman - IP
+  gustav - D
+  kirby - U
+  barbapappa - IT 
+  */
+  var kattenGustaf = "https://i.imgur.com/GwmZAnQ.png";
+  var blueKirby = "https://i.imgur.com/A8oPTRw.png";
+  var barbapappa = "https://i.imgur.com/3caGSsP.png";
+  //var pacman = "https://i.imgur.com/qyqNEvr.png";
+  var pacman = "https://i.imgur.com/SpIQoR5.png"
+
+  this.width = width;
+  this.height = height;
+  this.mouse = {
+    x: 0,
+    y: 0,
+  };
+  this.radius = 75;
+  this.program = program;
+
+  this.getImage = (program) => {
+    switch (program) {
+      case "D":
+        return kattenGustaf;
+      case "U":
+        return blueKirby;
+      case "IT":
+        return barbapappa;
+      case "IP":
+        return pacman;
+    }
+  };
+
+  this.getProgram = () => {
+    return this.program
+  };
+
+  this.getAngle = (xBase, yBase, xTarget, yTarget) => {
+    const x = xTarget - xBase;
+    const y = yTarget - yBase;
+    const angle = Math.atan2(x / y);
+    return Math.atan2(x, y);
+  };
+
+  this.getPlayer = () => {
+    let angle = this.getAngle(
+      width / 2,
+      height / 2,
+      this.mouse.x,
+      this.mouse.y
+    );
+    return angle;
+  }
+
+  this.draw = () => {
+    ctx.save();
+    ctx.fillStyle = "blue";
+    ctx.translate(width / 2, height / 2);
+    const img = new Image();
+    img.src = this.getImage(this.program);
+    ctx.rotate(-this.getPlayer() + Math.PI);
+    ctx.drawImage(
+      img,
+      -this.radius / 2,
+      -this.radius / 2,
+      this.radius,
+      this.radius
+    );
+    ctx.restore();
+  };
+
+  this.setMouse = (mousePos) => {
+    this.mouse = {
+      x: mousePos.x,
+      y: mousePos.y,
+    };
+  };
+  this.update = () => {};
+}
+
+//
+//
+// ██████╗ ██╗   ██╗██╗     ██╗     ███████╗████████╗
+// ██╔══██╗██║   ██║██║     ██║     ██╔════╝╚══██╔══╝
+// ██████╔╝██║   ██║██║     ██║     █████╗     ██║   
+// ██╔══██╗██║   ██║██║     ██║     ██╔══╝     ██║   
+// ██████╔╝╚██████╔╝███████╗███████╗███████╗   ██║   
+// ╚═════╝  ╚═════╝ ╚══════╝╚══════╝╚══════╝   ╚═╝   
+// 
+//
+
+function Bullet(ctx, width, height, angle, program) {
+  this.x = width / 2;
+  this.y = height / 2;
+  this.radius = 10;
+  this.color = "#20407C"//"#FF0000"
+  /*
+  D: #754022
+  IT: #E5398D
+  U: #20407C
+  IP: #70BD44
+  */
+  
+  switch (program) {
+    case "D":
+      this.color = "#ad7539";
+      //this.color = "#a17d5a";
+      //this.color = "#754022";
+      break;
+    case "U":
+      this.color = "#509cbf";
+      //this.color = "#20407C";
+      break;
+    case "IT":
+      this.color = "#E5398D";
+      break;
+    case "IP":
+      this.color = "#70BD44";
+      break;
+  }
+  
+  this.velocity = 10;
+  this.dx = Math.sin(angle);
+  this.dy = Math.cos(angle);
+
+  this.draw = () => {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI, false);
+    ctx.fillStyle = this.color;
+    ctx.fill();
+  }
+
+  this.inBounds = () => {
+    return !(
+          this.x < -this.radius / 2 ||
+          this.x > width ||
+          this.y < -this.radius / 2 ||
+          this.y > height
+        );
+  }
+
+  this.checkCollision = (enemy) => {
+    return  this.x - this.radius/2 <= enemy.x + enemy.width/2 &&
+            this.x + this.radius/2 > enemy.x - enemy.width/2 && 
+            this.y - this.radius/2 <= enemy.y + enemy.height/2 &&
+            this.y + this.radius/2 > enemy.y - enemy.height/2;
+  }
+
+  this.move = () => {
+  
+    this.x += this.dx * this.velocity
+    this.y += this.dy * this.velocity
+
+  }
+
+  
+}
+
+
+//
+//
+// ███████╗  ██████╗ ██████╗  ██╗ ██████╗ ████████╗        ██╗███████╗
+// ██╔════╝ ██╔════╝ ██╔══██╗ ██║ ██╔══██╗╚══██╔══╝        ██║██╔════╝
+// ███████╗ ██║      ██████╔╝ ██║ ██████╔╝   ██║           ██║███████╗
+// ╚════██║ ██║      ██╔══██╗ ██║ ██╔═══╝    ██║      ██   ██║╚════██║
+// ███████║ ╚██████╗ ██║  ██║ ██║ ██║        ██║   ██╗╚█████╔╝███████║
+// ╚══════╝  ╚═════╝ ╚═╝  ╚═╝ ╚═╝ ╚═╝        ╚═╝   ╚═╝ ╚════╝ ╚══════╝
+//
+//
+
+
+
+const width = window.innerWidth;
+const height = window.innerHeight;
+
+let smallest = Math.min(width, height);
+let score = 0;
+let scoreColor = "white";
+let gameStarted = false;
+let gameOver = false;
+
+
+const canvas = document.getElementById("myCanvas");
+const ctx = canvas.getContext("2d");
+let centerY;
+let centerX;
+const scale = 0.9;
+const isMobile = detectMob();
+
+let enemyInterval = 600;
+let baseEnemyInterval = enemyInterval;
+let intervalCount = 0;
+
+// timers
+let enemyTimer;
+let gameTimer;
+
+// import { Enemy } from './enemy.js';
+// import { Player } from './player.js';
+// import { Bullet } from './bullet.js'
+
+
+canvas.width = width;
+canvas.height = height;
+centerY = height / 2;
+centerX = width / 2;
+
+
+var player;
+var enemies = [];
+var bullets = [];
+
+
+function getMousePos(canvas, evt) {
+  let rect = canvas.getBoundingClientRect();
+  return {
+    x: evt.clientX - rect.left,
+    y: evt.clientY - rect.top
+  };
+}
+
+const configureEvents = () => {
+canvas.addEventListener("mousedown", (e) => {
+    if (!gameStarted) {
+      let mouse = getMousePos(canvas, e);
+      logoButtons.forEach(button => {
+        let lengthToButton = Math.sqrt(Math.pow(mouse.x - button.x, 2) + Math.pow(mouse.y - button.y, 2));
+        if(lengthToButton < button.length / 2) {
+          console.log(button.avatar);
+          startGame(button.avatar)
+        }
+      });
+    }
+    else if (gameOver) {
+      let mouse = getMousePos(canvas, e)
+    }
+    else if (bullets.length < 5) {
+      let angle = player.getPlayer();
+      let program = player.getProgram();
+      let bullet = new Bullet(ctx, canvas.width, canvas.height, angle, program);
+      bullets.push(bullet);
+    }
+  });
+
+canvas.addEventListener("mousemove", (e) => {
+    if (player) {
+      player.setMouse(getMousePos(canvas, e));
+    }
+  });
+}
+
+
+function detectMob() {
+    const toMatch = [
+        /Android/i,
+        /webOS/i,
+        /iPhone/i,
+        /iPad/i,
+        /iPod/i,
+        /BlackBerry/i,
+        /Windows Phone/i
+    ];
+
+    return toMatch.some((toMatchItem) => {
+        return navigator.userAgent.match(toMatchItem);
+    });
+}
+
+
+const drawScore = () => {
+  ctx.font = "30px Arial";
+  ctx.fillStyle = scoreColor;
+  ctx.fillText("Högskolepoäng: " + score, 10, 30);
+};
+
+
+const spawnEnemy = () => {
+  let enemy = new Enemy(ctx, canvas.width, canvas.height);
+  enemies.push(enemy);
+}
+
+
+const spawnEnemies = () => {
+  let enemiesToSpawn = 1;
+  if(score % 10 == 0 && score > 0) {
+    enemiesToSpawn = 2;
+  }
+
+  for(var i = 0; i < enemiesToSpawn; i++){
+    spawnEnemy()
+  }
+
+  // enemyInterval = baseEnemyInterval * (Math.pow(0.92, score));
+  enemyInterval = baseEnemyInterval - 1 * intervalCount;
+
+  intervalCount++;
+
+  // enemyInterval = baseEnemyInterval
+  if(!gameOver){
+    enemyTimer = setTimeout(spawnEnemies, enemyInterval);
+  }
+}
+
+let logoButtons = [
+  {
+    avatar: "D",
+    src_: "imgs/D.png",
+    srco: "https://i.imgur.com/A5E4OwT.png",
+    src: "https://i.postimg.cc/P5f0pLBL/D.png"
+  },
+  {
+    avatar: "U",
+    src_: "imgs/U.png",
+    srco: "https://i.imgur.com/T9w96bm.png",
+    src: "https://i.postimg.cc/3wVqctWp/U.png"
+    },
+  {
+    avatar: "IT",
+    src_: "imgs/IT.png",
+    srco: "https://i.imgur.com/0At8WuJ.png",
+    src: "https://i.postimg.cc/Qd6wp83f/IT.png"
+  },
+  {
+    avatar: "IP",
+    src_: "imgs/IP.png",
+    srcp: "https://i.imgur.com/OIBqavH.png",
+    //src: "https://i.postimg.cc/ZqCgHGY4/IP.png"
+    src: "https://i.postimg.cc/kXwqG6gq/IP.png"
+  },
+];
+
+const createMenu = () => {
+  drawCenteredText("CHOOSE YOUR FIGHTER", "90px Impact", "red");
+
+  for (let i = 0; i < logoButtons.length; i++) {
+    var x_diff = width / 10;
+    var y_diff = height / 10;
+    var x;
+    var y;
+    
+    switch(i){
+      case 0:
+        x = 3*x_diff;
+        y = 3*y_diff;
+        break;
+      case 1: 
+        x = 7*x_diff
+        y = 3*y_diff
+        break;
+      case 2:
+        x = 3*x_diff;
+        y = 7*y_diff;
+        break;
+      case 3:
+        x = 7*x_diff
+        y = 7*y_diff
+        break;
+    }
+    logoButtons[i].x = x;
+    logoButtons[i].y = y;
+
+    logoButtons[i].length = Math.min(width / 5, height / 5) * 1.4;
+    x = x - logoButtons[i].length / 2;
+    y = y - logoButtons[i].length / 2;
+
+    logoButtons[i].img = new Image();
+    logoButtons[i].img.src = logoButtons[i].src;
+
+    // in order to access coords and width/height in onload-triggered draw function below
+    logoButtons[i].img.length = logoButtons[i].length;
+    logoButtons[i].img.drawx = x;
+    logoButtons[i].img.drawy = y;
+
+    logoButtons[i].img.onload = function() {
+      ctx.drawImage(this, this.drawx, this.drawy, this.length, this.length);
+    }
+  }
+}
+
+const preGame = () => {
+  createMenu();
+  configureEvents();
+}
+
+const startGame = (program) => {
+  
+  gameStarted = true;
+  spawnEnemies();
+  drawScore();
+  player = new Player(ctx, canvas.width, canvas.height, program);
+
+  gameTimer = setInterval(updateGame, 20);
+}
+console.log({centerX}, {centerY})
+
+
+const stopGame = () => {
+  /*
+  fetch('/')
+  .then(response => response.json());
+  */
+
+  bullets = [];
+  enemies = [];
+
+  clearInterval(gameTimer);
+  clearTimeout(enemyTimer);
+
+   
+  player.draw();
+  drawScore();
+
+  drawCenteredText("GAME OVER", "90px Impact", "red")
+  drawCenteredText(`Du fick ${score} hp`, "100px Impact", "lime", 1.3)
+
+
+  setTimeout(() => { window.location.replace("index.html") }, 4000);
+
+
+};
+
+/*
+var txt = "Hello World";
+ctx.fillText("width:" + ctx.measureText(txt).width, 10, 50);
+ctx.fillText(txt, 10, 100);
+*/
+
+const updateGame = () => {
+  // Clear canvas before drawing all objects
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // For each enemy:
+  // move, draw, check for player collision, check if outside bounds
+
+  for (var i = enemies.length - 1; i >= 0; i--) {
+    let enemy = enemies[i];
+    enemy.move();
+    enemy.draw();
+
+    if (!enemy.inBounds()) {
+      enemies.splice(i, 1);
+    }
+
+    if (playerCollision(enemy)) {
+      gameOver = true;
+    }
+  }
+
+  if (gameOver) {
+    stopGame();
+    return;
+  }
+
+  // For each bullet:
+  // move, draw, check for enemy collision, check if outside bounds
+  for (var i = bullets.length - 1; i >= 0; i--) {
+    var bullet = bullets[i];
+    var hitTarget = false;
+    bullet.move();
+    bullet.draw();
+
+    for (var j = enemies.length - 1; j >= 0; j--) {
+      if (bullet.checkCollision(enemies[j])) {
+        score++;
+        console.log({ score }, { enemyInterval });
+        enemies.splice(j, 1);
+        hitTarget = true;
+        break;
+      }
+    }
+
+    if (!bullet.inBounds() || hitTarget) {
+      bullets.splice(i, 1);
+    }
+  }
+
+  //remove dead (??)
+
+  // Draw player
+  player.draw();
+
+  // Draw score
+  drawScore();
+};
+
+const playerCollision = (enemy) => 
+{
+  let playerX = canvas.width/2;
+  let playerY = canvas.height/2;
+
+  /*
+  console.log("============================")
+  console.log(playerX)
+  console.log(enemy.x)
+  console.log(enemy.radius)
+  console.log(enemy.radius/2)
+  console.log(Math.abs(playerX - (enemy.x + enemy.radius/2)) < 10)
+  */
+  return ((Math.abs(playerX - (enemy.x + enemy.radius*0)) < enemy.radius*1) && 
+          (Math.abs(playerY - (enemy.y + enemy.radius*0)) < enemy.radius*1));
+}
+
+
+preGame();
+
+function drawCenteredText(txt, font, color, yFactor = 1) {
+  ctx.font = font;
+  ctx.fillStyle = color;
+  let len = ctx.measureText(txt).width;
+  let typeface = ctx.font.slice(ctx.font.indexOf("px"));
+  while (len > width) {
+    ctx.font = (ctx.font.slice(0, ctx.font.indexOf("px")) - 10) + typeface;
+    len = ctx.measureText(txt).width;
+  }
+  ctx.fillText(txt, centerX - len / 2, centerY * yFactor);
+}
+
+
+
+/**
+ *
+ * meny med knappar för att starta och stoppa spelet
+ *
+ **/
+
+
+</script>
+
+</body>
+</html>
